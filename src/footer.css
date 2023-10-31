@@ -1,0 +1,50 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+.tab-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  width: 100%;
+  overflow-x: auto; 
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.tab-menu li {
+  text-align: center;
+  padding: 10px 20px;
+  /*border: 1px solid #ccc;*/
+  border-bottom: none;
+  background-color: #B8BCCB;
+  cursor: pointer;
+  flex: 1; 
+  min-width: 0; 
+}
+
+.tab-menu li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  display: block;
+}
+
+.tab-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .tab-menu li {
+    padding: 10px 15px;
+  }
+}

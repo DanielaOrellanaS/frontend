@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: #454F5C;
 }
 
 .App-logo {
@@ -14,7 +15,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +35,63 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+h1 {
+  margin: 0;
+  text-align: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px; 
+  font-size: 15px;
+  font-weight: 500; 
+  background-color: #262C3E;
+  color: #fff;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center;
+}
+
+
+/*LOGIN*/
+
+.form-group input,
+.form-group button {
+  margin-bottom: 10px; 
+}
+
+.custom-input:focus {
+  background-color: #454F5C;
+}
+
+.custom-button {
+  height: 25px;
+  width: 150px;
+  margin-top: 20px;
+  background-color: #FC7404;
+  color: white;
+  border: 0.5px solid #FC7404;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 0px 0px 0px 0px; 
+  display: inline-block; 
+  white-space: nowrap;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #767B86;
+  color: white;
+  border: 0.5px solid #767B86; 
+  border-radius: 3px;
+}
+
+.custom-input::placeholder {
+  color: rgba(227, 225, 225, 0.781);
 }
