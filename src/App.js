@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import FormLogin from './Components/FormLogin'; 
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,24 @@ function App() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [csrfToken, setCsrfToken] = useState('');
+
+  useEffect(() => {
+    // Obtener el token CSRF al cargar la aplicación
+    fetch('https://tradinapi.azurewebsites.net/get-csrf-token/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      setCsrfToken(data.csrfToken);
+    })
+    .catch(error => {
+      console.error('Error al obtener el token CSRF:', error);
+    });
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -14,6 +32,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken, // Incluir el token CSRF en el encabezado
         },
         body: JSON.stringify({
           username,
