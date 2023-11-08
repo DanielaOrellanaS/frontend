@@ -8,6 +8,7 @@ import Alerts from './Routes/Alerts';
 import Reports from './Routes/Reports';
 import Settings from './Routes/Settings';
 import Accounts from './Routes/Accounts';
+import FormCreate from './Components/FormCreate';
 
 ReactDOM.render(
   <Router>
@@ -19,6 +20,7 @@ ReactDOM.render(
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/accounts" element={<Accounts />} />
+        <Route path="/createaccount" element={<FormCreate />} />
       </Routes>
     </React.StrictMode>
   </Router>,

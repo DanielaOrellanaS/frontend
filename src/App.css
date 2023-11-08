@@ -95,3 +95,10 @@ h1 {
 .custom-input::placeholder {
   color: rgba(227, 225, 225, 0.781);
 }
+
+.error-message {
+  font-size: 14px; 
+  color: rgb(225, 69, 69); 
+  text-align: center; 
+  margin-top: 5px; 
+}
