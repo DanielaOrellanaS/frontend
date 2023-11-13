@@ -75,6 +75,44 @@ async function createAccount(username, password, email) {
       throw error;
     }
   }  
-  
-  
-export { getCsrfToken, login, createAccount, getAccountNames };
+
+  async function getAccountIds() {
+  try {
+    const response = await fetch(`${apiUrl}/cuenta/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch account IDs');
+    }
+    const data = await response.json();
+    const accountIds = data.results.map((account) => account.id);
+    return accountIds;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getDetailBalance(accountId) {
+  try {
+    const csrfToken = await getCsrfToken(); 
+    const response = await fetch(`${apiUrl}/detallebalance/?account_id=${accountId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch account balance details');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance};

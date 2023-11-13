@@ -167,35 +167,36 @@
     text-align: center;
     min-width: 30px; 
   }
-
-  .resume-table {
-    position: fixed;
-    right: 0;
-    display: inline-block;
+  .custom-table-box {
+    display: flex;
     align-items: center;
+    flex-wrap: nowrap;
+  }
+  
+  .collapsible-header {
+    flex: 1;
+  }
+  
+  .resume-table {
+    position: sticky;
+    right: 0;
     font-size: 9px;
   }
-
+  
   .resume-table table {
-    margin-left: 10px; 
     border-collapse: collapse;
   }
-
+  
   .resume-table td {
-    padding: 2px 8px; 
+    padding: 2px 8px;
   }
-
+  
   @media (max-width: 767px) {
     .custom-table-box {
-      display: flex;
       flex-wrap: wrap;
     }
-
-    .collapsible-header {
-      flex: 1;
-    }
   }
-
+  
   /*MENU FOOTER*/
 
   .fixed-footer {
