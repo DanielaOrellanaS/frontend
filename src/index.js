@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
 import './index.css';
 import App from './App';
-import Actions from './Routes/Actions';
+import Notices from './Routes/Notices';
 import Alerts from './Routes/Alerts';
 import Reports from './Routes/Reports';
 import Settings from './Routes/Settings';
@@ -15,7 +15,7 @@ ReactDOM.render(
     <React.StrictMode>
       <Routes>
         <Route path="/" element={<App />} /> 
-        <Route path="/actions" element={<Actions />} />
+        <Route path="/notices" element={<Notices />} />
         <Route path="/alerts" element={<Alerts />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />

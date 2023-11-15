@@ -206,8 +206,47 @@
     width: 100%;
   }
 
+  /*NOTICES*/
 
+  .custom-button {
+    height: 25px;
+    width: 150px;
+    margin-top: 20px;
+    background-color: #FC7404;
+    color: white;
+    border: 0.5px solid #FC7404;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0px 0px 0px 0px; 
+    display: inline-block; 
+    white-space: nowrap;
+  }
 
+  .custom-button,
+  .custom-button:visited,
+  .custom-button:hover,
+  .custom-button:active {
+    text-decoration: none;
+    color: white;
+    outline: none;
+  }
 
+  .custom-centered-button {
+    margin: 0 auto; 
+    display: block; 
+  }
 
+  .custom-centered-button a {
+    text-decoration: none;
+    color: inherit; 
+  }
+  
+  .centered-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+  }
+  
   
