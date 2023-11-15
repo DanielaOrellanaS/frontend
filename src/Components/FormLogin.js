@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Asegúrate de importar useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import '../App.css';
 import { getCsrfToken, login } from '../Api';
 
@@ -8,7 +8,7 @@ function FormLogin({ onSwitchToCreateAccount }) {
   const [password, setPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Obtiene la función de navegación
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     async function fetchCsrfToken() {
@@ -40,7 +40,6 @@ function FormLogin({ onSwitchToCreateAccount }) {
     try {
       const accessToken = await login(username, password, csrfToken);
       localStorage.setItem('accessToken', accessToken);
-      // Redirige al usuario a la página "Accounts" después del inicio de sesión exitoso
       navigate('/accounts');
     } catch (error) {
       console.error('Error al iniciar sesión:', error);

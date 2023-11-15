@@ -18,7 +18,7 @@ function MenuFooter() {
           </Link>
         </li>
         <li>
-          <Link to="/actions">
+          <Link to="/notices">
             <PendingActions /> 
           </Link>
         </li>

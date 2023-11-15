@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { createAccount } from '../Api'; // Importa la función createAccount
+import { createAccount } from '../Api'; 
 
 function FormCreate() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState(''); // Nuevo estado para el mensaje de éxito
+  const [successMessage, setSuccessMessage] = useState(''); 
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -24,20 +24,18 @@ function FormCreate() {
   const handleCreateAccount = async () => {
     if (!username || !password || !email) {
       setError('Por favor, completa todos los campos.');
-      setSuccessMessage(''); // Limpia el mensaje de éxito si hay un nuevo intento
+      setSuccessMessage(''); 
       return;
     }
 
     try {
-      // Enviar una solicitud para crear la cuenta
       await createAccount(username, password, email);
-      setError(''); // Limpia el mensaje de error
-      setSuccessMessage('Usuario creado con éxito'); // Muestra el mensaje de éxito
-      // Puedes agregar aquí la redirección o cualquier otro comportamiento después de la creación exitosa
+      setError(''); 
+      setSuccessMessage('Usuario creado con éxito'); 
     } catch (error) {
       console.error('Error al crear la cuenta:', error);
       setError('Error al crear la cuenta. Inténtalo de nuevo.');
-      setSuccessMessage(''); // Limpia el mensaje de éxito en caso de error
+      setSuccessMessage(''); 
     }
   };
 
@@ -74,7 +72,7 @@ function FormCreate() {
         required
       />
       {error && <div className="error-message">{error}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>} {/* Mostrar el mensaje de éxito */}
+      {successMessage && <div className="success-message">{successMessage}</div>} 
       <button className="custom-button" onClick={handleCreateAccount}>
         Crear
       </button>
