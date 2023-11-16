@@ -180,16 +180,38 @@
   .resume-table {
     position: sticky;
     right: 0;
-    font-size: 9px;
+    top: 0;
+    font-size: 11px;
+    display: flex;
+    justify-content: flex-end;
   }
   
   .resume-table table {
     border-collapse: collapse;
+    table-layout: fixed;
   }
   
   .resume-table td {
     padding: 2px 8px;
+    text-align: center;
+    vertical-align: middle;
+    width: auto;
+    min-width: 80px;
   }
+  
+  .custom-table-box {
+    display: flex;
+    flex-wrap: nowrap; /* Evita que los elementos se envuelvan en pantallas pequeñas */
+    overflow-x: auto; /* Añade desplazamiento horizontal si no hay suficiente espacio */
+  }
+  
+  @media (max-width: 767px) {
+    .custom-table-box {
+      flex-wrap: wrap;
+      overflow-x: auto;
+      display: block; /* Cambia a apilamiento para tamaños de pantalla más pequeños */
+    }
+  }  
   
   @media (max-width: 767px) {
     .custom-table-box {
