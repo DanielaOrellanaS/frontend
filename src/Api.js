@@ -118,7 +118,7 @@ async function getDetailBalance(accountId) {
 async function getOperations(accountId) {
   try {
     const csrfToken = await getCsrfToken(); 
-    const response = await fetch(`http://127.0.0.1:8000/operaciones/?account_id=${accountId}`, {
+    const response = await fetch(`${apiUrl}/operaciones/?account_id=${accountId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ async function getCountOperations() {
   try {
     const csrfToken = await getCsrfToken();
 
-    const response = await fetch(`http://127.0.0.1:8000/countoperaciones/`, {
+    const response = await fetch(`${apiUrl}/countoperaciones/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ async function getCountOperations() {
 async function getOpenOperations(accountId) {
   try {
     const csrfToken = await getCsrfToken();
-    const response = await fetch(`http://127.0.0.1:8000/operacionesabiertas/?account_id=${accountId}`, {
+    const response = await fetch(`${apiUrl}/operacionesabiertas/?account_id=${accountId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ async function getOpenOperations(accountId) {
 async function getCloseOperations(accountId) {
   try {
     const csrfToken = await getCsrfToken();
-    const response = await fetch(`http://127.0.0.1:8000/operacionescerradas/?account_id=${accountId}`, {
+    const response = await fetch(`${apiUrl}/operacionescerradas/?account_id=${accountId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
