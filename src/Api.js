@@ -115,4 +115,94 @@ async function getDetailBalance(accountId) {
   }
 }
 
-export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance};
+async function getOperations(accountId) {
+  try {
+    const csrfToken = await getCsrfToken(); 
+    const response = await fetch(`http://127.0.0.1:8000/operaciones/?account_id=${accountId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch account operations');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getCountOperations() {
+  try {
+    const csrfToken = await getCsrfToken();
+
+    const response = await fetch(`http://127.0.0.1:8000/countoperaciones/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch operation counts');
+    }
+
+    const data = await response.json();
+    return data.reduce((acc, entry) => {
+      acc[entry.symbol] = entry.open_operations;
+      return acc;
+    }, {});
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getOpenOperations(accountId) {
+  try {
+    const csrfToken = await getCsrfToken();
+    const response = await fetch(`http://127.0.0.1:8000/operacionesabiertas/?account_id=${accountId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch open operations');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+async function getCloseOperations(accountId) {
+  try {
+    const csrfToken = await getCsrfToken();
+    const response = await fetch(`http://127.0.0.1:8000/operacionescerradas/?account_id=${accountId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch close operations');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getOperations, getCountOperations, getOpenOperations, getCloseOperations};
+

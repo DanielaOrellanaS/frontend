@@ -2,13 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import '../routes.css';
 import MenuFooter from '../Components/MenuFooter';
 import AccountDetail from '../Components/AccountDetail';
-import { getAccountNames, getAccountIds, getDetailBalance } from '../Api';
+import { getAccountNames, getAccountIds, getDetailBalance, getCountOperations, getOpenOperations, getCloseOperations } from '../Api';
 
 function Accounts() {
   const [accountNames, setAccountNames] = useState([]);
   const [accountIds, setAccountIds] = useState([]);
   const [accountDetails, setAccountDetails] = useState({});
   const lastFetchTime = useRef(0);
+  const [openOperationsCount, setOpenOperationsCount] = useState({});
+  const [openOperations, setOpenOperations] = useState({});
+  const [closeOperations, setCloseOperations] = useState({});
 
   useEffect(() => {
     async function fetchData() {
@@ -18,6 +21,9 @@ function Accounts() {
 
         const ids = await getAccountIds();
         setAccountIds(ids);
+
+        const countData = await getCountOperations();
+        setOpenOperationsCount(countData);
 
         const currentTime = Date.now();
         if (currentTime - lastFetchTime.current > 900000) {
@@ -43,6 +49,36 @@ function Accounts() {
           console.log('Demasiadas solicitudes en un corto período de tiempo. Se omitió la solicitud.');
         }
 
+        //OPERACIONES ABIERTAS 
+        const openOpsPromises = accountIds.map(async (accountId) => {
+          try {
+            const openOps = await getOpenOperations(accountId);
+            return { [accountId]: openOps };
+          } catch (error) {
+            console.error(`Error fetching open operations for ${accountId}:`, error);
+            return { [accountId]: [] };
+          }
+        });
+
+        const openOps = await Promise.all(openOpsPromises);
+        const openOpsObject = Object.assign({}, ...openOps);
+        setOpenOperations(openOpsObject); 
+
+        //OPERACIONES CERRADAS 
+        const closeOpsPromises = accountIds.map(async (accountId) => {
+          try {
+            const closeOps = await getCloseOperations(accountId);
+            return { [accountId]: closeOps };
+          } catch (error) {
+            console.error(`Error fetching close operations for ${accountId}:`, error);
+            return { [accountId]: [] };
+          }
+        });
+
+        const closeOps = await Promise.all(closeOpsPromises);
+        const closeOpsObject = Object.assign({}, ...closeOps);
+        setCloseOperations(closeOpsObject);
+
       } catch (error) {
         console.error('Error al obtener los datos de las cuentas:', error);
       }
@@ -54,7 +90,7 @@ function Accounts() {
   const getResumeTableData = (accountId) => {
     const { balance, flotante } = accountDetails[accountId] || {};
     return [
-      ['Balance', 'Flotante', '%Flotante-Balance'],
+      //['Balance', 'Flotante', '%Flotante-Balance'],
       [balance || 0, flotante || 0, (flotante && balance) ? ((flotante / balance) * 100).toFixed(2) + '%' : '0%'],
     ];
   };
@@ -76,7 +112,9 @@ function Accounts() {
         <h1>Cuentas</h1>
         {accountIds.map((accountId, index) => {
           const currentAccountName = accountNames[index];
-          console.log('Account ID:', accountId, 'Account Name:', currentAccountName);
+          const symbolCounts = openOperationsCount || {};
+          const operations = openOperations[accountId] || [];
+          const operationsClose = closeOperations[accountId] || []; 
           return (
             <AccountDetail
               key={currentAccountName}
@@ -85,15 +123,20 @@ function Accounts() {
               tableData={getTableData(accountId)}
               colaData={[
                 ['GBPAUD', 'GBPUSD', 'AUDCAD', 'AUDUSD', 'USDJPY'],
-                [9, 2, 3, 5, 2],
+                [symbolCounts['GBPAUD'] || '-', symbolCounts['GBPUSD'] || '-', symbolCounts['AUDCAD'] || '-', symbolCounts['AUDUSD'] || '-', symbolCounts['USDJPY'] || '-'],
               ]}
               operationsOpen={[
                 ['Simbolo', 'Tipo', 'Lotes', 'PrecioOpen', 'FechaOpen', 'FechaClose', 'PrecioClose', 'TP', 'SL', 'Profit'],
-                [9, 2, 3, 5, 2, 5, 3, 2, 3, 5],
+                ...(operations.length ? operations.map(op => Object.values(op)) : [Array(10).fill('-')]),
               ]}
               operationsClose={[
                 ['Simbolo', 'Tipo', 'Lotes', 'PrecioOpen', 'FechaOpen', 'FechaClose', 'PrecioClose', 'TP', 'SL', 'Profit'],
-                [9, 2, 3, 5, 2, 5, 3, 2, 3, 5],
+                ...(operationsClose.length > 0
+                  ? operationsClose.map(op =>
+                      op && Object.values(op).length ? Object.values(op) : Array(10).fill('-')
+                    )
+                  : [Array(10).fill('-')]
+                ),
               ]}
             />
           );
