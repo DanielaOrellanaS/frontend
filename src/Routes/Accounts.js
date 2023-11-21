@@ -26,7 +26,7 @@ function Accounts() {
         setOpenOperationsCount(countData);
 
         const currentTime = Date.now();
-        if (currentTime - lastFetchTime.current > 900000) {
+        if (currentTime - lastFetchTime.current > 90000) {
           // Si han pasado al menos 5 minutos desde la última solicitud
           lastFetchTime.current = currentTime;
 
@@ -89,9 +89,21 @@ function Accounts() {
 
   const getResumeTableData = (accountId) => {
     const { balance, flotante } = accountDetails[accountId] || {};
-    return [
+    const balanceClass = balance && balance > 70 ? 'blue-text' : balance && balance < 70 ? 'red-text' : '';
+    const flotanteClass = flotante && flotante > 70 ? 'blue-text' : flotante && flotante < 70 ? 'red-text' : '';
+    /* return [
       //['Balance', 'Flotante', '%Flotante-Balance'],
       [balance || 0, flotante || 0, (flotante && balance) ? ((flotante / balance) * 100).toFixed(2) + '%' : '0%'],
+    ]; */
+    const formattedBalance = balance ? balance.toLocaleString('es-ES') : 0;
+    const formattedFlotante = flotante ? flotante.toLocaleString('es-ES') : 0;
+
+    return [
+      [
+        <span className={balanceClass}>{formattedBalance}</span>,
+        <span className={flotanteClass}>{formattedFlotante}</span>,
+        (flotante && balance) ? ((flotante / balance) * 100).toFixed(2) + '%' : '0%',
+      ],
     ];
   };
 
@@ -115,6 +127,7 @@ function Accounts() {
           const symbolCounts = openOperationsCount || {};
           const operations = openOperations[accountId] || [];
           const operationsClose = closeOperations[accountId] || []; 
+          console.log('Datos Account')
           return (
             <AccountDetail
               key={currentAccountName}
