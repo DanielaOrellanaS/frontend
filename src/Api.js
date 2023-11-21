@@ -202,7 +202,43 @@ async function getCloseOperations(accountId) {
   }
 }
 
+async function getLastIndicators() {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/last_indicator/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch last indicators');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getPairsById(id) {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/par/?id=${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch pairs by ID');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
 
-export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getOperations, getCountOperations, getOpenOperations, getCloseOperations};
+
+export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById};
 
