@@ -204,7 +204,7 @@ async function getCloseOperations(accountId) {
 
 async function getLastIndicators() {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/last_indicator/`, {
+    const response = await fetch(`${apiUrl}/last_indicator/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -222,7 +222,7 @@ async function getLastIndicators() {
 
 async function getPairsById(id) {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/par/?id=${id}`, {
+    const response = await fetch(`${apiUrl}/par/?id=${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
