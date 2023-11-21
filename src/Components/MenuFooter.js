@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-import { Assessment, Report, PendingActions, Settings, ListAlt } from '@mui/icons-material'; 
+import { Assessment, ShowChart, PendingActions, Settings, ListAlt } from '@mui/icons-material'; 
 import '../footer.css';
 
 function MenuFooter() {
@@ -13,8 +13,8 @@ function MenuFooter() {
           </Link>
         </li>
         <li>
-          <Link to="/alerts">
-            <Report /> 
+          <Link to="/indicator">
+            <ShowChart /> 
           </Link>
         </li>
         <li>

@@ -181,7 +181,7 @@
     position: sticky;
     right: 0;
     top: 0;
-    font-size: 11px;
+    font-size: 14px;
     display: flex;
     justify-content: flex-end;
   }
@@ -197,6 +197,16 @@
     vertical-align: middle;
     width: auto;
     min-width: 80px;
+  }
+
+  .blue-text {
+    color: rgb(102, 102, 255);
+    font-weight: bold;
+  }
+  
+  .red-text {
+    color: rgb(248, 77, 77);
+    font-weight: bold;
   }
   
   .custom-table-box {
@@ -233,7 +243,6 @@
   .custom-button {
     height: 25px;
     width: 150px;
-    margin-top: 20px;
     background-color: #FC7404;
     color: white;
     border: 0.5px solid #FC7404;
@@ -268,7 +277,53 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; 
+    height: 10vh; 
   }
   
+  /*INDICATOR*/
+
+  .table-container-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .custom-table-indicator {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 20px;
+    border: 1px solid #ddd;
+  }
+
+  .custom-table-indicator td{
+    color: white;
+    border: 1px solid #ddd;
+  }
+
+  .custom-table-indicator tr{
+    color: white;
+    font-size: 8px;
+    border: 1px solid #ddd;
+  }
+
+  .custom-table-indicator th{
+    color: white;
+    border: 1px solid #ddd;
+  }
+
+  .pc1.blue-text {
+    color: rgb(102, 102, 255);
+    font-weight: bold;
+  }
   
+  .pc1.red-text {
+    color: rgb(248, 77, 77);
+    font-weight: bold;
+  }
+  
+
