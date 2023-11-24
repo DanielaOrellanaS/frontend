@@ -2,12 +2,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import '../routes.css';
 import MenuFooter from '../Components/MenuFooter';
 import AccountDetail from '../Components/AccountDetail';
-import { getAccountNames, getAccountIds, getDetailBalance, getCountOperations, getOpenOperations, getCloseOperations } from '../Api';
+import { getAccountNames, getAccountIds, getDetailBalance, getCountOperations, getOpenOperations, getCloseOperations, getDetailBalanceDay } from '../Api';
 
 function Accounts() {
   const [accountNames, setAccountNames] = useState([]);
   const [accountIds, setAccountIds] = useState([]);
   const [accountDetails, setAccountDetails] = useState({});
+  const [accountDetailsDay, setAccountDetailsDay] = useState({});
   const lastFetchTime = useRef(0);
   const [openOperationsCount, setOpenOperationsCount] = useState({});
   const [openOperations, setOpenOperations] = useState({});
@@ -44,6 +45,20 @@ function Accounts() {
           const details = await Promise.all(detailsPromises);
           const detailsObject = Object.assign({}, ...details);
           setAccountDetails(detailsObject);
+
+          const detailsDayPromises = ids.map(async (accountId) => {
+            try {
+              const detailBalanceDay = await getDetailBalanceDay(accountId);
+              return { accountId, gain: detailBalanceDay }; 
+            } catch (error) {
+              console.error(`Error fetching account details for ${accountId}:`, error);
+              return { accountId, gain: null };
+            }
+          });
+  
+          const detailsDayResults = await Promise.all(detailsDayPromises);
+          const detailsDayObject = Object.fromEntries(detailsDayResults.map(({ accountId, gain }) => [accountId, gain]));
+          setAccountDetailsDay(detailsDayObject);
 
         } else {
           console.log('Demasiadas solicitudes en un corto período de tiempo. Se omitió la solicitud.');
@@ -107,13 +122,13 @@ function Accounts() {
     ];
   };
 
-  const getTableData = (accountId) => {
+  const getTableData = (accountId, gain) => {
     const { balance, equity, flotante, operations } = accountDetails[accountId] || {};
     return [
-      { label: 'Balance', value: balance ? balance.toFixed(2).toLocaleString() : 'N/A' },
-      { label: 'Equidad', value: equity ? equity.toFixed(2).toLocaleString() : 'N/A' },
-      { label: 'Flotante', value: flotante ? flotante.toFixed(2).toLocaleString() : 'N/A' },
-      { label: 'Ganancia Día', value: 'N/A' },
+      { label: 'Balance', value: balance ? balance.toFixed(2).toLocaleString() : '0' },
+      { label: 'Equidad', value: equity ? equity.toFixed(2).toLocaleString() : '0' },
+      { label: 'Flotante', value: flotante ? flotante.toFixed(2).toLocaleString() : '0' },
+      { label: 'Ganancia Día', value: gain ? gain.toFixed(2) : '0' },
       { label: 'Num Operaciones', value: operations },
     ];
   };
@@ -125,15 +140,15 @@ function Accounts() {
         {accountIds.map((accountId, index) => {
           const currentAccountName = accountNames[index];
           const symbolCounts = openOperationsCount || {};
+          const gain = accountDetailsDay[accountId];
           const operations = openOperations[accountId] || [];
           const operationsClose = closeOperations[accountId] || []; 
-          console.log('Datos Account')
           return (
             <AccountDetail
               key={currentAccountName}
               accountName={currentAccountName}
               resumeTable={getResumeTableData(accountId)}
-              tableData={getTableData(accountId)}
+              tableData={getTableData(accountId, gain)}
               colaData={[
                 ['GBPAUD', 'GBPUSD', 'AUDCAD', 'AUDUSD', 'USDJPY'],
                 [symbolCounts['GBPAUD'] || '-', symbolCounts['GBPUSD'] || '-', symbolCounts['AUDCAD'] || '-', symbolCounts['AUDUSD'] || '-', symbolCounts['USDJPY'] || '-'],

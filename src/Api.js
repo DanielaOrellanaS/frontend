@@ -115,6 +115,35 @@ async function getDetailBalance(accountId) {
   }
 }
 
+async function getDetailBalanceDay(accountId) {
+  try {
+    const csrfToken = await getCsrfToken(); 
+    const response = await fetch(`${apiUrl}/detallebalancedia/?account_id=${accountId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch account balance details');
+    }
+
+    const { current_balance, previous_closing_balance } = await response.json();
+
+    if (typeof current_balance === 'number' && typeof previous_closing_balance === 'number') {
+      const difference = current_balance - previous_closing_balance;
+      return parseFloat(difference.toFixed(2));
+    } else {
+      throw new Error('Invalid balance data');
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 async function getOperations(accountId) {
   try {
     const csrfToken = await getCsrfToken(); 
@@ -240,5 +269,5 @@ async function getPairsById(id) {
 
 
 
-export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById};
+export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById};
 
