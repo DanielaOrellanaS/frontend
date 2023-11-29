@@ -164,27 +164,15 @@ async function getOperations(accountId) {
   }
 }
 
-async function getCountOperations() {
+async function getCountOperations(accountId) {
   try {
-    const csrfToken = await getCsrfToken();
-
-    const response = await fetch(`${apiUrl}/countoperaciones/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-    });
-
+    const response = await fetch(`${apiUrl}/numoperaciones/`);
     if (!response.ok) {
-      throw new Error('Failed to fetch operation counts');
+      throw new Error('Failed to fetch operations count');
     }
-
+    
     const data = await response.json();
-    return data.reduce((acc, entry) => {
-      acc[entry.symbol] = entry.open_operations;
-      return acc;
-    }, {});
+    return data[accountId] || [];
   } catch (error) {
     throw error;
   }

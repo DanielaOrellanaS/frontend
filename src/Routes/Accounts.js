@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import '../routes.css';
 import MenuFooter from '../Components/MenuFooter';
 import AccountDetail from '../Components/AccountDetail';
-import { getAccountNames, getAccountIds, getDetailBalance, getCountOperations, getOpenOperations, getCloseOperations, getDetailBalanceDay } from '../Api';
+import { getAccountNames, getAccountIds, getDetailBalance, getOpenOperations, getCloseOperations, getDetailBalanceDay, getCountOperations, getPairsById } from '../Api';
 
 function Accounts() {
   const [accountNames, setAccountNames] = useState([]);
@@ -10,106 +10,77 @@ function Accounts() {
   const [accountDetails, setAccountDetails] = useState({});
   const [accountDetailsDay, setAccountDetailsDay] = useState({});
   const lastFetchTime = useRef(0);
-  const [openOperationsCount, setOpenOperationsCount] = useState({});
   const [openOperations, setOpenOperations] = useState({});
   const [closeOperations, setCloseOperations] = useState({});
+  const [countOperations, setCountOperations] = useState({});
+  const [pairNames, setPairNames] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const names = await getAccountNames();
         setAccountNames(names);
-
+  
         const ids = await getAccountIds();
         setAccountIds(ids);
-
-        const countData = await getCountOperations();
-        setOpenOperationsCount(countData);
-
+  
         const currentTime = Date.now();
         if (currentTime - lastFetchTime.current > 90000) {
-          // Si han pasado al menos 5 minutos desde la última solicitud
           lastFetchTime.current = currentTime;
-
-          const detailsPromises = ids.map(async (accountId) => {
+  
+          for (const accountId of ids) {
             try {
               const detailBalance = await getDetailBalance(accountId);
-              return { [accountId]: detailBalance };
-            } catch (error) {
-              console.error(`Error fetching account details for ${accountId}:`, error);
-              setAccountDetails(prevDetails => ({ ...prevDetails, [accountId]: { error: true } }));
-              return { [accountId]: {} };
-            }
-          });
-          
-          const details = await Promise.all(detailsPromises);
-          const detailsObject = Object.assign({}, ...details);
-          setAccountDetails(detailsObject);
-
-          const detailsDayPromises = ids.map(async (accountId) => {
-            try {
               const detailBalanceDay = await getDetailBalanceDay(accountId);
-              return { accountId, gain: detailBalanceDay }; 
-            } catch (error) {
-              console.error(`Error fetching account details for ${accountId}:`, error);
-              return { accountId, gain: null };
-            }
-          });
+              const openOps = await getOpenOperations(accountId);
+              const closeOps = await getCloseOperations(accountId);
+              const countOps = await getCountOperations(accountId);
   
-          const detailsDayResults = await Promise.all(detailsDayPromises);
-          const detailsDayObject = Object.fromEntries(detailsDayResults.map(({ accountId, gain }) => [accountId, gain]));
-          setAccountDetailsDay(detailsDayObject);
-
+              setAccountDetails(prevDetails => ({
+                ...prevDetails,
+                [accountId]: detailBalance,
+              }));
+  
+              setAccountDetailsDay(prevDetailsDay => ({
+                ...prevDetailsDay,
+                [accountId]: detailBalanceDay,
+              }));
+  
+              setOpenOperations(prevOpenOps => ({
+                ...prevOpenOps,
+                [accountId]: openOps,
+              }));
+  
+              setCloseOperations(prevCloseOps => ({
+                ...prevCloseOps,
+                [accountId]: closeOps,
+              }));
+  
+              setCountOperations(prevCountOps => ({
+                ...prevCountOps,
+                [accountId]: countOps,
+              }));
+            } catch (error) {
+              console.error(`Error fetching data for account ${accountId}:`, error);
+            }
+          }
         } else {
           console.log('Demasiadas solicitudes en un corto período de tiempo. Se omitió la solicitud.');
         }
-
-        //OPERACIONES ABIERTAS 
-        const openOpsPromises = accountIds.map(async (accountId) => {
-          try {
-            const openOps = await getOpenOperations(accountId);
-            return { [accountId]: openOps };
-          } catch (error) {
-            console.error(`Error fetching open operations for ${accountId}:`, error);
-            return { [accountId]: [] };
-          }
-        });
-
-        const openOps = await Promise.all(openOpsPromises);
-        const openOpsObject = Object.assign({}, ...openOps);
-        setOpenOperations(openOpsObject); 
-
-        //OPERACIONES CERRADAS 
-        const closeOpsPromises = accountIds.map(async (accountId) => {
-          try {
-            const closeOps = await getCloseOperations(accountId);
-            return { [accountId]: closeOps };
-          } catch (error) {
-            console.error(`Error fetching close operations for ${accountId}:`, error);
-            return { [accountId]: [] };
-          }
-        });
-
-        const closeOps = await Promise.all(closeOpsPromises);
-        const closeOpsObject = Object.assign({}, ...closeOps);
-        setCloseOperations(closeOpsObject);
-
       } catch (error) {
         console.error('Error al obtener los datos de las cuentas:', error);
       }
     }
-
+  
     fetchData();
-  }, [accountIds]);
+    fetchPairNames();
+  }, []);
+  
 
   const getResumeTableData = (accountId) => {
     const { balance, flotante } = accountDetails[accountId] || {};
     const balanceClass = balance && balance > 70 ? 'blue-text' : balance && balance < 70 ? 'red-text' : '';
     const flotanteClass = flotante && flotante > 70 ? 'blue-text' : flotante && flotante < 70 ? 'red-text' : '';
-    /* return [
-      //['Balance', 'Flotante', '%Flotante-Balance'],
-      [balance || 0, flotante || 0, (flotante && balance) ? ((flotante / balance) * 100).toFixed(2) + '%' : '0%'],
-    ]; */
     const formattedBalance = balance ? balance.toLocaleString('es-ES') : 0;
     const formattedFlotante = flotante ? flotante.toLocaleString('es-ES') : 0;
 
@@ -133,16 +104,38 @@ function Accounts() {
     ];
   };
 
+  const fetchPairNames = async () => {
+    try {
+      const pairIds = Array.from({ length: 8 }, (_, i) => i + 1);
+      const pairsData = await Promise.all(pairIds.map(async (id) => {
+        const pairDataArray = await getPairsById(id);
+        const pairName = pairDataArray.length > 0 ? pairDataArray[0].pares : 'N/A';
+        return pairName;
+      }));
+      setPairNames(pairsData);
+    } catch (error) {
+      console.error('Error fetching pair names:', error);
+    }
+  };
+
   return (
     <div>
       <div className="container">
         <h1>Cuentas</h1>
         {accountIds.map((accountId, index) => {
           const currentAccountName = accountNames[index];
-          const symbolCounts = openOperationsCount || {};
           const gain = accountDetailsDay[accountId];
           const operations = openOperations[accountId] || [];
           const operationsClose = closeOperations[accountId] || []; 
+          const countOperationsTable = countOperations[accountId] || []; 
+          const pairData = {};
+
+          // Iterar sobre countOperationsTable para organizar los datos por símbolo
+          countOperationsTable.forEach(data => {
+            pairData[data.symbol] = data.open_operations;
+          });
+
+          const pairOperations = pairNames.map(pair => pairData[pair] || '-');
           return (
             <AccountDetail
               key={currentAccountName}
@@ -150,8 +143,8 @@ function Accounts() {
               resumeTable={getResumeTableData(accountId)}
               tableData={getTableData(accountId, gain)}
               colaData={[
-                ['GBPAUD', 'GBPUSD', 'AUDCAD', 'AUDUSD', 'USDJPY'],
-                [symbolCounts['GBPAUD'] || '-', symbolCounts['GBPUSD'] || '-', symbolCounts['AUDCAD'] || '-', symbolCounts['AUDUSD'] || '-', symbolCounts['USDJPY'] || '-'],
+                pairNames,
+                pairOperations,
               ]}
               operationsOpen={[
                 ['Simbolo', 'Tipo', 'Lotes', 'PrecioOpen', 'FechaOpen', 'FechaClose', 'PrecioClose', 'TP', 'SL', 'Profit'],
