@@ -255,7 +255,55 @@ async function getPairsById(id) {
   }
 }
 
+async function getEvents() {
+  try {
+    const response = await fetch(`${apiUrl}/eventos/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch events');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getEventsPerDay(fechas = []) {
+  try {
+    let url = `${apiUrl}/eventos/`;
+
+    if (!Array.isArray(fechas)) {
+      fechas = [fechas];
+    }
+
+    if (fechas.length > 0) {
+      const formattedFechas = fechas.map((fecha) => `fecha=${fecha}`).join('&');
+      url = `${apiUrl}/eventos/?${formattedFechas}`;
+    }
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch events');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
 
-export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById};
+export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById, getEvents, getEventsPerDay};
 

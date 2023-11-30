@@ -9,6 +9,7 @@ import Settings from './Routes/Settings';
 import Accounts from './Routes/Accounts';
 import FormCreate from './Components/FormCreate';
 import Indicator from './Routes/Indicator';
+import EventDetail from './Components/EventDetail';
 
 ReactDOM.render(
   <Router>
@@ -21,6 +22,7 @@ ReactDOM.render(
         <Route path="/settings" element={<Settings />} />
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/createaccount" element={<FormCreate />} />
+        <Route path="/detalle-evento/:nameEvent" element={<EventDetail />} />
       </Routes>
     </React.StrictMode>
   </Router>,
