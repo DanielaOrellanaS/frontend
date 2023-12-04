@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Account({ accountName, resumeTable, tableData, colaData, operationsOpen, operationsClose }) {
+function AccountDetail({ accountName, resumeTable, tableData, colaData, operationsOpen, operationsClose }) {
   const [isTableOpen, setIsTableOpen] = useState(false);
 
   const toggleTable = () => {
@@ -105,4 +105,4 @@ function Account({ accountName, resumeTable, tableData, colaData, operationsOpen
   );
 }
 
-export default Account;
+export default AccountDetail;

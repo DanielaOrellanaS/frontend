@@ -48,7 +48,7 @@ function Notices() {
       console.log("Fecha seleccionada:", date);
       const data = date ? await getEventsPerDay(date) : await getEvents();
       setEventsTableData(data.results);
-      extractCurrencyImpactData(data.results); // Llamada a la función extractCurrencyImpactData para extraer los datos relevantes
+      extractCurrencyImpactData(data.results); 
     } catch (error) {
       console.error("Error fetching data:", error);
     }

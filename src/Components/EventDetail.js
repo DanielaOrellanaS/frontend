@@ -15,7 +15,7 @@ function EventDetail() {
     
     const fetchData = async (eventName) => {
         try {
-        const data = await getEvents(); // Obtén los detalles del evento desde la API
+        const data = await getEvents();
         const filteredData = data.results.filter(event => event.evento === eventName);
         setEventDetails(filteredData);
         } catch (error) {
