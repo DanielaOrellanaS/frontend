@@ -56,8 +56,7 @@ async function createAccount(username, password, email) {
       throw error;
     }
   }
-
-  async function getAccountNames() {
+  async function getAccountInfo() {
     try {
       const response = await fetch(`${apiUrl}/cuenta/`, {
         method: 'GET',
@@ -65,35 +64,21 @@ async function createAccount(username, password, email) {
           'Content-Type': 'application/json',
         },
       });
+  
       if (!response.ok) {
-        throw new Error('Failed to fetch account names');
+        throw new Error('Failed to fetch account information');
       }
+  
       const data = await response.json();
+  
       const accountNames = data.results.map((account) => account.alias);
-      return accountNames;
+      const accountIds = data.results.map((account) => account.id);
+  
+      return { accountNames, accountIds };
     } catch (error) {
       throw error;
     }
   }  
-
-  async function getAccountIds() {
-  try {
-    const response = await fetch(`${apiUrl}/cuenta/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch account IDs');
-    }
-    const data = await response.json();
-    const accountIds = data.results.map((account) => account.id);
-    return accountIds;
-  } catch (error) {
-    throw error;
-  }
-}
 
 async function getDetailBalance(accountId) {
   try {
@@ -132,17 +117,15 @@ async function getDetailBalanceDay(accountId) {
 
     const { current_balance, previous_closing_balance } = await response.json();
 
-    if (typeof current_balance === 'number' && typeof previous_closing_balance === 'number') {
-      const difference = current_balance - previous_closing_balance;
-      return parseFloat(difference.toFixed(2));
-    } else {
-      throw new Error('Invalid balance data');
-    }
+    const currentBalance = typeof current_balance === 'number' ? current_balance : 0;
+    const previousClosingBalance = typeof previous_closing_balance === 'number' ? previous_closing_balance : 0;
+
+    const difference = currentBalance - previousClosingBalance;
+    return parseFloat(difference.toFixed(2));
   } catch (error) {
     throw error;
   }
 }
-
 
 async function getOperations(accountId) {
   try {
@@ -305,5 +288,5 @@ async function getEventsPerDay(fechas = []) {
 }
 
 
-export { getCsrfToken, login, createAccount, getAccountNames, getAccountIds, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById, getEvents, getEventsPerDay};
+export { getCsrfToken, login, createAccount, getAccountInfo, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById, getEvents, getEventsPerDay};
 

@@ -294,28 +294,26 @@
     width: 100%;
     margin: 0 auto;
     text-align: center;
+    overflow-x: auto;
   }
 
   .custom-table-indicator {
-    width: 50%;
+    width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    font-size: 20px;
-    border: 1px solid #ddd;
-  }
-
-  .custom-table-indicator td{
-    color: white;
+    font-size: 2vw;
     border: 1px solid #ddd;
   }
 
   .custom-table-indicator tr{
     color: white;
-    font-size: 8px;
+    font-size: 1em;
     border: 1px solid #ddd;
   }
 
-  .custom-table-indicator th{
+  .custom-table-indicator td,
+  .custom-table-indicator th {
     color: white;
     border: 1px solid #ddd;
   }
