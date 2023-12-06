@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import '../routes.css';
 import MenuFooter from '../Components/MenuFooter';
 import AccountDetail from '../Components/AccountDetail';
-import { getAccountInfo, getDetailBalance, getDetailBalanceDay, getOpenOperations, getCloseOperations, getCountOperations, getPairsById } from '../Api';
+import { getAccountInfo, getDetailBalance, getDetailBalanceDay, getOpenOperations, getCloseOperations, getCountOperations, getPairs } from '../Api';
 
 function Accounts() {
   const [accountNames, setAccountNames] = useState([]);
@@ -17,15 +17,20 @@ function Accounts() {
   async function fetchData() {
     try {
       const { accountNames, accountIds } = await getAccountInfo();
+      const pairsDataResponse = await getPairs(); 
+      const pairsData = pairsDataResponse.results.map(pair => pair.pares);
+      
+      setPairNames(pairsData);
       setAccountNames(accountNames);
       setAccountIds(accountIds);
+
       for (const accountId of accountIds) {
         try {
           const detailBalance = await getDetailBalance(accountId);
           const openOps = await getOpenOperations(accountId);
           const closeOps = await getCloseOperations(accountId);
           const countOps = await getCountOperations(accountId);
-
+          const gain = await getDetailBalanceDay(accountId);
           setAccountDetails(prevDetails => ({
             ...prevDetails,
             [accountId]: detailBalance,
@@ -46,10 +51,9 @@ function Accounts() {
             [accountId]: countOps,
           }));
 
-          const gain = await getDetailBalanceDay(accountId);
           setGainDay(prevGain => ({
             ...prevGain,
-            [accountId]: gain.toFixed(2),
+            [accountId]: gain.difference.toFixed(2),
           }));
         } catch (error) {
           console.error(`Error al obtener los datos de las cuentas ${accountId}:`, error);
@@ -64,7 +68,6 @@ function Accounts() {
     fetchData();
     const intervalId = setInterval(() => {
       fetchData();
-      fetchPairNames();
     }, 5 * 60 * 1000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,20 +103,6 @@ function Accounts() {
       ];
     };
   }, [accountDetails, gainDay]);
-
-  const fetchPairNames = async () => {
-    try {
-      const pairIds = Array.from({ length: 8 }, (_, i) => i + 1);
-      const pairsData = await Promise.all(pairIds.map(async (id) => {
-        const pairDataArray = await getPairsById(id);
-        const pairName = pairDataArray.length > 0 ? pairDataArray[0].pares : 'N/A';
-        return pairName;
-      }));
-      setPairNames(pairsData);
-    } catch (error) {
-      console.error('Error fetching pair names:', error);
-    }
-  };
 
   return (
     <div>

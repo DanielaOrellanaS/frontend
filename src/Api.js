@@ -1,4 +1,5 @@
 const apiUrl = 'https://tradinapi.azurewebsites.net';
+const localUrl = 'http://127.0.0.1:8000';  
 
 async function getCsrfToken() {
   try {
@@ -56,6 +57,7 @@ async function createAccount(username, password, email) {
       throw error;
     }
   }
+
   async function getAccountInfo() {
     try {
       const response = await fetch(`${apiUrl}/cuenta/`, {
@@ -103,7 +105,7 @@ async function getDetailBalance(accountId) {
 async function getDetailBalanceDay(accountId) {
   try {
     const csrfToken = await getCsrfToken(); 
-    const response = await fetch(`${apiUrl}/detallebalancedia/?account_id=${accountId}`, {
+    const response = await fetch(`${localUrl}/detallebalancedia/?account_id=${accountId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -114,14 +116,8 @@ async function getDetailBalanceDay(accountId) {
     if (!response.ok) {
       throw new Error('Failed to fetch account balance details');
     }
-
-    const { current_balance, previous_closing_balance } = await response.json();
-
-    const currentBalance = typeof current_balance === 'number' ? current_balance : 0;
-    const previousClosingBalance = typeof previous_closing_balance === 'number' ? previous_closing_balance : 0;
-
-    const difference = currentBalance - previousClosingBalance;
-    return parseFloat(difference.toFixed(2));
+    const data = await response.json();
+    return data;
   } catch (error) {
     throw error;
   }
@@ -181,7 +177,6 @@ async function getOpenOperations(accountId) {
   }
 }
 
-
 async function getCloseOperations(accountId) {
   try {
     const csrfToken = await getCsrfToken();
@@ -220,9 +215,9 @@ async function getLastIndicators() {
   }
 }
 
-async function getPairsById(id) {
+async function getPairs() {
   try {
-    const response = await fetch(`${apiUrl}/par/?id=${id}`, {
+    const response = await fetch(`${localUrl}/par/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -288,5 +283,5 @@ async function getEventsPerDay(fechas = []) {
 }
 
 
-export { getCsrfToken, login, createAccount, getAccountInfo, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairsById, getEvents, getEventsPerDay};
+export { getCsrfToken, login, createAccount, getAccountInfo, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairs, getEvents, getEventsPerDay};
 

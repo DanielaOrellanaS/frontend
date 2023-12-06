@@ -1,45 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import MenuFooter from '../Components/MenuFooter';
 import '../routes.css';
-import { getLastIndicators, getPairsById } from '../Api';
+import { getLastIndicators, getPairs } from '../Api'; 
 
 function Indicator() {
   const [tableData, setTableData] = useState([]);
 
-  const fetchPairsNames = async (data) => {
-    const pairsWithData = await Promise.all(
-      data.map(async (rowData) => {
-        try {
-          const pairDataArray = await getPairsById(rowData.par);
-          if (pairDataArray.length > 0) {
-            const pairName = pairDataArray[0].pares || 'N/A';
-            return {
-              ...rowData,
-              pairName,
-            };
-          } else {
-            throw new Error('Empty response from getPairsById');
-          }
-        } catch (error) {
-          console.error("Error fetching pair name:", error);
-          return {
-            ...rowData,
-            pairName: 'N/A',
-          };
-        }
-      })
-    );
-    return pairsWithData;
-  };
-  
-
   const fetchData = async () => {
     try {
-      const data = await getLastIndicators();
-      const dataWithPairs = await fetchPairsNames(data.results);
+      const indicators = await getLastIndicators();
+      const pairsData = await getPairs();
+      const pairsMap = new Map(pairsData.results.map(pair => [pair.id, pair.pares]));
+  
+      const dataWithPairs = indicators.results.map(rowData => ({
+        ...rowData,
+        pairName: pairsMap.get(rowData.par) || 'N/A', 
+      }));
+  
       setTableData(dataWithPairs);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -74,10 +54,9 @@ function Indicator() {
                 hour: 'numeric',
                 minute: 'numeric',
               });
-  
+
               const pc1Class = rowData.pc1 && rowData.pc1 > 70 ? 'blue-text' : rowData.pc1 && rowData.pc1 < 70 ? 'red-text' : '';
               const formattedPC1 = rowData.pc1 ? parseFloat(rowData.pc1).toFixed(4) : 'N/A';
-
               return (
                 <tr key={index}>
                   <td>{formattedDate}</td>
@@ -92,7 +71,7 @@ function Indicator() {
       </div>
       <MenuFooter />
     </div>
-  );  
+  );
 }
 
 export default Indicator;
