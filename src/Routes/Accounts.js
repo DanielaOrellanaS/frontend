@@ -1,155 +1,43 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import '../routes.css';
+import React, { useEffect, useState } from 'react';
 import MenuFooter from '../Components/MenuFooter';
+import { getAllDetailBalance } from '../Api';
 import AccountDetail from '../Components/AccountDetail';
-import { getAccountInfo, getDetailBalance, getDetailBalanceDay, getOpenOperations, getCloseOperations, getCountOperations, getPairs } from '../Api';
 
 function Accounts() {
-  const [accountNames, setAccountNames] = useState([]);
-  const [accountIds, setAccountIds] = useState([]);
-  const [accountDetails, setAccountDetails] = useState({});
-  const [openOperations, setOpenOperations] = useState({});
-  const [closeOperations, setCloseOperations] = useState({});
-  const [countOperations, setCountOperations] = useState({});
-  const [pairNames, setPairNames] = useState([]);
-  const [gainDay, setGainDay] = useState({});
-  
-  async function fetchData() {
-    try {
-      const { accountNames, accountIds } = await getAccountInfo();
-      const pairsDataResponse = await getPairs(); 
-      const pairsData = pairsDataResponse.results.map(pair => pair.pares);
-      
-      setPairNames(pairsData);
-      setAccountNames(accountNames);
-      setAccountIds(accountIds);
+  const [details, setDetails] = useState([]);
 
-      for (const accountId of accountIds) {
-        try {
-          const detailBalance = await getDetailBalance(accountId);
-          const openOps = await getOpenOperations(accountId);
-          const closeOps = await getCloseOperations(accountId);
-          const countOps = await getCountOperations(accountId);
-          const gain = await getDetailBalanceDay(accountId);
-          setAccountDetails(prevDetails => ({
-            ...prevDetails,
-            [accountId]: detailBalance,
-          }));
-
-          setOpenOperations(prevOpenOps => ({
-            ...prevOpenOps,
-            [accountId]: openOps,
-          }));
-
-          setCloseOperations(prevCloseOps => ({
-            ...prevCloseOps,
-            [accountId]: closeOps,
-          }));
-
-          setCountOperations(prevCountOps => ({
-            ...prevCountOps,
-            [accountId]: countOps,
-          }));
-
-          setGainDay(prevGain => ({
-            ...prevGain,
-            [accountId]: gain.difference.toFixed(2),
-          }));
-        } catch (error) {
-          console.error(`Error al obtener los datos de las cuentas ${accountId}:`, error);
-        }
-      }
-    } catch (error) {
-      console.error('Error al obtener los datos de las cuentas:', error);
-    }
-  } 
-    
   useEffect(() => {
-    fetchData();
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getAllDetailBalance()
+      .then(data => {
+        setDetails(data); 
+      })
+      .catch(error => {
+        console.error('Error fetching account balance details:', error);
+      });
   }, []);
-
-  const getResumeTableData = useMemo((accountId) => {
-    return (accountId) => {
-      const { balance, flotante } = accountDetails[accountId] || {};
-      const balanceClass = balance && balance > 70 ? 'blue-text' : balance && balance < 70 ? 'red-text' : '';
-      const flotanteClass = flotante && flotante > 70 ? 'blue-text' : flotante && flotante < 70 ? 'red-text' : '';
-      const formattedBalance = balance ? balance.toLocaleString('es-ES') : 0;
-      const formattedFlotante = flotante ? flotante.toLocaleString('es-ES') : 0;
-  
-      return [
-        [
-          <span className={balanceClass}>{formattedBalance}</span>,
-          <span className={flotanteClass}>{formattedFlotante}</span>,
-          (flotante && balance) ? ((flotante / balance) * 100).toFixed(2) + '%' : '0%',
-        ],
-      ];
-    };
-  }, [accountDetails]);
-
-  const getTableData = useMemo((accountId) => {
-    return (accountId) => {
-      const { balance, equity, flotante, operations } = accountDetails[accountId] || {};
-      return [
-        { label: 'Balance', value: balance ? balance.toFixed(2).toLocaleString() : '0' },
-        { label: 'Equidad', value: equity ? equity.toFixed(2).toLocaleString() : '0' },
-        { label: 'Flotante', value: flotante ? flotante.toFixed(2).toLocaleString() : '0' },
-        { label: 'Ganancia Día', value: gainDay[accountId] || '0' },
-        { label: 'Num Operaciones', value: operations },
-      ];
-    };
-  }, [accountDetails, gainDay]);
 
   return (
     <div>
-      <div className="container">
-        <h1>Cuentas</h1>
-        {accountIds.map((accountId, index) => {
-          const currentAccountName = accountNames[index];
-          const operations = openOperations[accountId] || [];
-          const operationsClose = closeOperations[accountId] || []; 
-          const countOperationsTable = countOperations[accountId] || []; 
-          const pairData = {};
-          countOperationsTable.forEach(data => {
-            pairData[data.symbol] = data.open_operations;
-          });
-          const pairOperations = pairNames.map(pair => pairData[pair] || '-');
-
-          return (
-            <AccountDetail
-              key={currentAccountName}
-              accountName={currentAccountName}
-              resumeTable={getResumeTableData(accountId)}
-              tableData={getTableData(accountId)}
-              colaData={[
-                pairNames,
-                pairOperations,
-              ]}
-              operationsOpen={[
-                ['Simbolo', 'Tipo', 'Lotes', 'PrecioOpen', 'FechaOpen', 'FechaClose', 'PrecioClose', 'TP', 'SL', 'Profit'],
-                ...(operations.length ? operations.map(op => Object.values(op)) : [Array(10).fill('-')]),
-              ]}
-              operationsClose={[
-                ['Simbolo', 'Tipo', 'Lotes', 'PrecioOpen', 'FechaOpen', 'FechaClose', 'PrecioClose', 'TP', 'SL', 'Profit'],
-                ...(operationsClose.length > 0
-                  ? operationsClose.map(op =>
-                      op && Object.values(op).length ? Object.values(op) : Array(10).fill('-')
-                    )
-                  : [Array(10).fill('-')]
-                ),
-              ]}
-            />
-          );
-        })}
+      <h1>Cuentas</h1>
+      <div>
+        {details.map(detail => (
+          <AccountDetail
+            key={detail.id}
+            accountName={detail.alias}
+            balance={detail.balance}
+            flotante={detail.flotante}
+            percentage={detail.percentage}
+            equity={detail.equity}
+            gain={detail.gain}
+            numOperations={detail.num_operations}
+            openOperations={detail.open_operations || []}
+            closedOperations={detail.closed_operations || []}
+          />
+        ))}
       </div>
       <MenuFooter />
     </div>
   );
-  
 }
 
 export default Accounts;

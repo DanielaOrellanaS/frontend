@@ -102,10 +102,51 @@ async function getDetailBalance(accountId) {
   }
 }
 
+async function getDetailBalanceResume(accountId) {
+  try {
+    const csrfToken = await getCsrfToken(); 
+    const response = await fetch(`${apiUrl}/detallebalanceresumen/?account_id=${accountId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch account balance details');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+async function getAllDetailBalance() {
+  try {
+    const csrfToken = await getCsrfToken(); 
+    const response = await fetch(`${apiUrl}/detallecompleto/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch account balance details');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getDetailBalanceDay(accountId) {
   try {
     const csrfToken = await getCsrfToken(); 
-    const response = await fetch(`${localUrl}/detallebalancedia/?account_id=${accountId}`, {
+    const response = await fetch(`${apiUrl}/detallebalancedia/?account_id=${accountId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -217,7 +258,7 @@ async function getLastIndicators() {
 
 async function getPairs() {
   try {
-    const response = await fetch(`${localUrl}/par/`, {
+    const response = await fetch(`${apiUrl}/par/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -283,5 +324,5 @@ async function getEventsPerDay(fechas = []) {
 }
 
 
-export { getCsrfToken, login, createAccount, getAccountInfo, getDetailBalance, getDetailBalanceDay, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairs, getEvents, getEventsPerDay};
+export { getCsrfToken, login, createAccount, getAccountInfo, getDetailBalance, getAllDetailBalance, getDetailBalanceDay, getDetailBalanceResume, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairs, getEvents, getEventsPerDay};
 
