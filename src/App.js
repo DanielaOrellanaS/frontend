@@ -13,11 +13,11 @@ function App() {
           <img src="NEO.png" alt="NEO" style={{ width: '100px', height: '100px' }} />
           {showLoginForm ? (
             <FormLogin
-              onSwitchToCreateAccount={() => setShowLoginForm(false)} // Agrega esta prop para cambiar al formulario de creación
+              onSwitchToCreateAccount={() => setShowLoginForm(false)} 
             />
           ) : (
             <FormCreate
-              onSwitchToLogin={() => setShowLoginForm(true)} // Agrega esta prop para cambiar al formulario de inicio de sesión
+              onSwitchToLogin={() => setShowLoginForm(true)}
             />
           )}
         </div>

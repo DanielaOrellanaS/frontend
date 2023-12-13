@@ -166,6 +166,7 @@
   .custom-table-second td {
     text-align: center;
     min-width: 30px; 
+    font-size: 11px;
   }
   .custom-table-box {
     display: flex;
@@ -206,6 +207,11 @@
   
   .red-text {
     color: rgb(248, 77, 77);
+    font-weight: bold;
+  }
+
+  .white-text {
+    color: white;
     font-weight: bold;
   }
   

@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import '../routes.css';
 
-function AccountDetail({ accountName, balance, flotante, percentage, equity, gain, numOperations, openOperations, closedOperations }) {
+function AccountDetail({ accountName, balance, flotante, percentage, equity, gain, numOperations, openOperations, closedOperations, getColorClass }) {
   const [isTableOpen, setIsTableOpen] = useState(false);
 
   const toggleTable = () => {
     setIsTableOpen(!isTableOpen);
+  };
+
+  const formatNumber = (number) => {
+    if (number || number === 0) {
+      return number.toLocaleString('es');
+    }
+    return '0';
   };
 
   return (
@@ -20,9 +27,9 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
               <table>
                 <tbody>
                   <tr>
-                    <td>{balance}</td>
-                    <td>{flotante}</td>
-                    <td>{percentage}</td>
+                    <td className={getColorClass(balance)}>{formatNumber(balance)}</td>
+                    <td className={getColorClass(flotante)}>{formatNumber(flotante)}</td>
+                    <td>{formatNumber(percentage)}{'%'}</td>
                   </tr> 
                 </tbody>
               </table>
@@ -35,23 +42,23 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
                   <tbody>
                     <tr>
                       <td>Balance:</td>
-                      <td>{balance}</td>
+                      <td>{formatNumber(balance)}</td>
                     </tr>
                     <tr>
                       <td>Flotante:</td>
-                      <td>{flotante}</td>
+                      <td>{formatNumber(flotante)}</td>
                     </tr>
                     <tr>
                       <td>Porcentaje:</td>
-                      <td>{percentage}</td>
+                      <td>{formatNumber(percentage)}</td>
                     </tr>
                     <tr>
                       <td>Equidad:</td>
-                      <td>{equity}</td>
+                      <td>{formatNumber(equity)}</td>
                     </tr>
                     <tr>
                       <td>Ganancia Día:</td>
-                      <td>{gain}</td>
+                      <td>{formatNumber(gain)}</td>
                     </tr>
                     <tr>
                       <td>Num Operaciones:</td>

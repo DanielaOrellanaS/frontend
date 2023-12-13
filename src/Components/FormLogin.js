@@ -40,6 +40,7 @@ function FormLogin({ onSwitchToCreateAccount }) {
     try {
       const accessToken = await login(username, password, csrfToken);
       localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('username', username);
       navigate('/accounts');
     } catch (error) {
       console.error('Error al iniciar sesión:', error);

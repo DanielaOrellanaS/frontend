@@ -102,27 +102,6 @@ async function getDetailBalance(accountId) {
   }
 }
 
-async function getDetailBalanceResume(accountId) {
-  try {
-    const csrfToken = await getCsrfToken(); 
-    const response = await fetch(`${apiUrl}/detallebalanceresumen/?account_id=${accountId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch account balance details');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-
 async function getAllDetailBalance() {
   try {
     const csrfToken = await getCsrfToken(); 
@@ -143,17 +122,17 @@ async function getAllDetailBalance() {
   }
 }
 
-async function getDetailBalanceDay(accountId) {
+async function getAllDetailBalancePerUser(accountsList) {
   try {
     const csrfToken = await getCsrfToken(); 
-    const response = await fetch(`${apiUrl}/detallebalancedia/?account_id=${accountId}`, {
+    const queryParams = accountsList.join(',');
+    const response = await fetch(`${apiUrl}/detallecompleto/?accounts=${queryParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,
       },
     });
-
     if (!response.ok) {
       throw new Error('Failed to fetch account balance details');
     }
@@ -184,60 +163,6 @@ async function getOperations(accountId) {
   }
 }
 
-async function getCountOperations(accountId) {
-  try {
-    const response = await fetch(`${apiUrl}/numoperaciones/`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch operations count');
-    }
-    
-    const data = await response.json();
-    return data[accountId] || [];
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function getOpenOperations(accountId) {
-  try {
-    const csrfToken = await getCsrfToken();
-    const response = await fetch(`${apiUrl}/operacionesabiertas/?account_id=${accountId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch open operations');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function getCloseOperations(accountId) {
-  try {
-    const csrfToken = await getCsrfToken();
-    const response = await fetch(`${apiUrl}/operacionescerradas/?account_id=${accountId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch close operations');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
 async function getLastIndicators() {
   try {
     const response = await fetch(`${apiUrl}/last_indicator/`, {
@@ -248,6 +173,24 @@ async function getLastIndicators() {
     });
     if (!response.ok) {
       throw new Error('Failed to fetch last indicators');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getUserFavAccounts(username) {
+  try {
+    const response = await fetch(`${apiUrl}/cuentafavorita/?user=${username}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch user favorite accounts');
     }
     const data = await response.json();
     return data;
@@ -324,5 +267,7 @@ async function getEventsPerDay(fechas = []) {
 }
 
 
-export { getCsrfToken, login, createAccount, getAccountInfo, getDetailBalance, getAllDetailBalance, getDetailBalanceDay, getDetailBalanceResume, getOperations, getCountOperations, getOpenOperations, getCloseOperations, getLastIndicators, getPairs, getEvents, getEventsPerDay};
+
+
+export { getCsrfToken, login, createAccount, getAccountInfo, getUserFavAccounts, getDetailBalance, getAllDetailBalance, getOperations, getLastIndicators, getPairs, getEvents, getEventsPerDay, getAllDetailBalancePerUser};
 
