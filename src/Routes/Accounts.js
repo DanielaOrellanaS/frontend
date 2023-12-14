@@ -53,6 +53,7 @@ function Accounts() {
             equity={detail.equity}
             gain={detail.gain}
             numOperations={detail.num_operations}
+            colas={detail.colas}
             openOperations={detail.open_operations || []}
             closedOperations={detail.closed_operations || []}
             getColorClass={getColorClass}

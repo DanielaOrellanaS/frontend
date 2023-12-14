@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../routes.css';
 
-function AccountDetail({ accountName, balance, flotante, percentage, equity, gain, numOperations, openOperations, closedOperations, getColorClass }) {
+function AccountDetail({ accountName, balance, flotante, percentage, equity, gain, numOperations, colas, openOperations, closedOperations, getColorClass }) {
   const [isTableOpen, setIsTableOpen] = useState(false);
 
   const toggleTable = () => {
@@ -71,23 +71,22 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
                 <table className="custom-table-second second-table">
                   <thead>
                     <tr>
-                      <th colSpan={openOperations && openOperations.length > 0 ? Object.keys(openOperations[0]).length : 0}>Operaciones Abiertas</th>
-                    </tr>
-                    <tr>
-                      {openOperations.length > 0 &&
-                        Object.keys(openOperations[0]).map((key) => (
-                          <th key={key}>{key}</th>
-                        ))}
+                      <th>Colas</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {openOperations.map((rowData, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {Object.values(rowData).map((value, index) => (
-                          <td key={index}>{value}</td>
-                        ))}
+                    {colas && colas.length > 0 ? (
+                      colas.map((cola, index) => (
+                        <tr key={index}>
+                          <td>{cola.symbol}</td>
+                          <td>{cola.open_operations}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="2">No hay datos de colas</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -95,24 +94,66 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
                 <table className="custom-table-second second-table">
                   <thead>
                     <tr>
-                      <th colSpan={closedOperations && closedOperations.length > 0 ? Object.keys(closedOperations[0]).length : 0}>Operaciones Cerradas</th>
-                    </tr>
-                    <tr>
-                      {closedOperations.length > 0 &&
-                        Object.keys(closedOperations[0]).map((key) => (
-                          <th key={key}>{key}</th>
-                        ))}
+                      <th colSpan={openOperations.length > 0 ? Object.keys(openOperations[0]).length : 1}>
+                        Operaciones Abiertas
+                      </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {closedOperations.map((rowData, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {Object.values(rowData).map((value, index) => (
-                          <td key={index}>{value}</td>
+                  {openOperations.length > 0 ? (
+                    <tbody>
+                      <tr>
+                        {Object.keys(openOperations[0]).map((key) => (
+                          <th key={key}>{key}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
+                      {openOperations.map((rowData, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {Object.values(rowData).map((value, index) => (
+                            <td key={index}>{value}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  ) : (
+                    <tbody>
+                      <tr>
+                        <td colSpan={1}>No hay datos de operaciones abiertas</td>
+                      </tr>
+                    </tbody>
+                  )}
+                </table>
+              </div>
+              <div className="table-container">
+                <table className="custom-table-second second-table">
+                  <thead>
+                    <tr>
+                      <th colSpan={closedOperations.length > 0 ? Object.keys(closedOperations[0]).length : 1}>
+                        Operaciones Cerradas
+                      </th>
+                    </tr>
+                  </thead>
+                  {closedOperations.length > 0 ? (
+                    <tbody>
+                      <tr>
+                        {Object.keys(closedOperations[0]).map((key) => (
+                          <th key={key}>{key}</th>
+                        ))}
+                      </tr>
+                      {closedOperations.map((rowData, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {Object.values(rowData).map((value, index) => (
+                            <td key={index}>{value}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  ) : (
+                    <tbody>
+                      <tr>
+                        <td colSpan={1}>No hay datos de operaciones cerradas</td>
+                      </tr>
+                    </tbody>
+                  )}
                 </table>
               </div>
             </div>
