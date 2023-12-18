@@ -308,7 +308,7 @@
   }
 
   .custom-table-indicator {
-    width: 80%; 
+    width: 50%; 
     max-width: 1200px;
     margin: 0 auto;
     border-collapse: collapse;
@@ -360,8 +360,26 @@
     padding: 20px;
   }
   
-  .custom-button {
-    margin-bottom: 20px;
+  .custom-button-notices {
+    height: 25px;
+    width: 150px;
+    background-color: #343B4B;
+    color: white;
+    border: none; 
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    position: relative; 
+  }         
+
+  .custom-button-notices::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: 2px solid #FC7404;
   }
   
   .table-container-notices {
@@ -389,12 +407,14 @@
     color: white;
     font-size: 12px;
     display: flex;
+    margin-top: 15px;
     justify-content: center; 
     align-items: center; 
   }
 
   .label-container {
     margin-right: 20px; 
+    font-size: 14px;
   }
 
   .datePicker {

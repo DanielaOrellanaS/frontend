@@ -65,7 +65,7 @@ function Notices() {
     <div>
       <h1>Noticias</h1>
       <div className='container-button'>
-        <button className="custom-button custom-centered-button" onClick={handleButtonClick}>
+        <button className="custom-button-notices custom-centered-button" onClick={handleButtonClick}>
           Calendario Económico
         </button>
       </div>
