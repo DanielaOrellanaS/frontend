@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import MenuFooter from '../Components/MenuFooter';
 import '../routes.css';
-import { getLastIndicators, getPairs } from '../Api'; 
+import { getLastIndicators, getPairs } from '../Api';
 
 function Indicator() {
-  const [tableData, setTableData] = useState([]);
+  const [tableData5, setTableData5] = useState([]);
+  const [tableData15, setTableData15] = useState([]);
 
   const fetchData = async () => {
     try {
       const indicators = await getLastIndicators();
       const pairsData = await getPairs();
       const pairsMap = new Map(pairsData.results.map(pair => [pair.id, pair.pares]));
-  
-      const dataWithPairs = indicators.results.map(rowData => ({
+
+      const dataWithPairs5 = indicators.results.filter(rowData => rowData.time_frame === 5).map(rowData => ({
         ...rowData,
-        pairName: pairsMap.get(rowData.par) || 'N/A', 
+        pairName: pairsMap.get(rowData.par) || 'N/A',
       }));
-  
-      setTableData(dataWithPairs);
+
+      const dataWithPairs15 = indicators.results.filter(rowData => rowData.time_frame === 15).map(rowData => ({
+        ...rowData,
+        pairName: pairsMap.get(rowData.par) || 'N/A',
+      }));
+
+      setTableData5(dataWithPairs5);
+      setTableData15(dataWithPairs15);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -32,9 +39,8 @@ function Indicator() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div>
-      <h1>Indicador</h1>
+  const renderTable = (data) => {
+    return (
       <div className="table-container-indicator">
         <table className="custom-table-indicator">
           <thead>
@@ -46,7 +52,7 @@ function Indicator() {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((rowData, index) => {
+            {data.map((rowData, index) => {
               const formattedDate = new Date(rowData.date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'numeric',
@@ -69,9 +75,24 @@ function Indicator() {
           </tbody>
         </table>
       </div>
+    );
+  };
+
+  return (
+    <div>
+      <h1>Indicador</h1>
+      <div>
+        <h2>Timeframe 5</h2>
+        {renderTable(tableData5)}
+      </div>
+      <div>
+        <h2>Timeframe 15</h2>
+        {renderTable(tableData15)}
+      </div>
+      <div className="space"></div>
       <MenuFooter />
     </div>
-  );
+  );  
 }
 
 export default Indicator;
