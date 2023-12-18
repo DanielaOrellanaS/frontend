@@ -91,24 +91,21 @@ function Notices() {
               </tr>
             </thead>
             <tbody>
-              {eventsTableData.map((rowData, index) => (
-                <tr key={index}>
-                  {desiredHeaders.map((header, index) => (
-                    <td key={index}>
-                      {header === 'evento' ? (
-                        <Link
-                        to={`/detalle-evento/${rowData['evento']}`}
-                        className="link-white"
-                      >
+            {eventsTableData.map((rowData, index) => (
+              <tr key={index}>
+                {desiredHeaders.map((header, index) => (
+                  <td key={index}>
+                    {header === 'evento' ? (
+                      <Link to={`/detalle-evento/${rowData['evento']}`} className="link-white">
                         {rowData[header]}
-                      </Link>                      
-                      ) : (
-                        rowData[header]
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+                      </Link>
+                    ) : (
+                      rowData[header] || '-' 
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
             </tbody>
           </table>
         </div>

@@ -45,10 +45,9 @@ function Indicator() {
         <table className="custom-table-indicator">
           <thead>
             <tr>
-              <th>Date</th>
+              <th>Fecha</th>
               <th>Moneda</th>
               <th>PC1</th>
-              <th>Time_frame</th>
             </tr>
           </thead>
           <tbody>
@@ -68,7 +67,6 @@ function Indicator() {
                   <td>{formattedDate}</td>
                   <td>{rowData.pairName}</td>
                   <td className={`pc1 ${pc1Class}`}>{formattedPC1}</td>
-                  <td>{rowData.time_frame}</td>
                 </tr>
               );
             })}
@@ -82,11 +80,11 @@ function Indicator() {
     <div>
       <h1>Indicador</h1>
       <div>
-        <h2>Timeframe 5</h2>
+        <h2>Time frame 5</h2>
         {renderTable(tableData5)}
       </div>
       <div>
-        <h2>Timeframe 15</h2>
+        <h2>Time frame 15</h2>
         {renderTable(tableData15)}
       </div>
       <div className="space"></div>

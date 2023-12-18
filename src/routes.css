@@ -381,7 +381,7 @@
   .custom-table-notices th {
     padding: 5px;
     text-align: center;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     color: white;
   }
 
