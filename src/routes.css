@@ -297,20 +297,21 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
     margin: 0 auto;
     text-align: center;
     overflow-x: auto;
   }
 
   .custom-table-indicator {
-    width: 100%;
-    max-width: 100%;
+    width: 80%; 
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 14px;
     border-collapse: collapse;
     margin-top: 20px;
-    font-size: 2vw;
     border: 1px solid #ddd;
   }
+  
 
   .custom-table-indicator tr{
     color: white;
