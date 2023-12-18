@@ -45,7 +45,6 @@ function Notices() {
 
   const fetchData = async (date = null) => {
     try {
-      console.log("Fecha seleccionada:", date);
       const data = date ? await getEventsPerDay(date) : await getEvents();
       setEventsTableData(data.results);
       extractCurrencyImpactData(data.results); 
@@ -100,7 +99,7 @@ function Notices() {
                         {rowData[header]}
                       </Link>
                     ) : (
-                      rowData[header] || '-' 
+                      rowData[header] || '-'
                     )}
                   </td>
                 ))}
