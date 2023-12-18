@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../routes.css';
 
-function AccountDetail({ accountName, balance, flotante, percentage, equity, gain, numOperations, colas, openOperations, closedOperations, getColorClass }) {
+function AccountDetail({ accountName, accountId, balance, flotante, percentage, equity, gain, numOperations, colas, openOperations, closedOperations, getColorClass }) {
   const [isTableOpen, setIsTableOpen] = useState(false);
 
   const toggleTable = () => {
@@ -20,7 +20,7 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
       <div className="custom-table-container">
         <div className="custom-table-box">
           <div className="collapsible-header" onClick={toggleTable}>
-            {accountName}
+            {`${accountName} (${accountId})`}
           </div>
           {!isTableOpen && (
             <div className="resume-table">
@@ -31,6 +31,11 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
                     <td className={getColorClass(flotante)}>{formatNumber(flotante)}</td>
                     <td>{formatNumber(percentage)}{'%'}</td>
                   </tr> 
+                  <tr className='text-resume-table'>
+                    <td>Balance</td>
+                    <td>Flotante</td>
+                    <td>Porcentaje</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -69,22 +74,26 @@ function AccountDetail({ accountName, balance, flotante, percentage, equity, gai
               </div>
               <div className="table-container">
                 <table className="custom-table-second second-table">
-                  <thead>
-                    <tr>
-                      <th>Colas</th>
-                    </tr>
-                  </thead>
                   <tbody>
-                    {colas && colas.length > 0 ? (
-                      colas.map((cola, index) => (
-                        <tr key={index}>
-                          <td>{cola.symbol}</td>
-                          <td>{cola.open_operations}</td>
+                    <tr>
+                      <th colSpan={colas.length ? colas.length + 1 : 1}>Colas</th>
+                    </tr>
+                    {colas.length ? (
+                      <>
+                        <tr>
+                          {colas.map((cola, index) => (
+                            <td key={index}>{cola.symbol}</td>
+                          ))}
                         </tr>
-                      ))
+                        <tr>
+                          {colas.map((cola, index) => (
+                            <td key={index}>{cola.open_operations}</td>
+                          ))}
+                        </tr>
+                      </>
                     ) : (
                       <tr>
-                        <td colSpan="2">No hay datos de colas</td>
+                        <td colSpan={1}>No hay datos disponibles</td>
                       </tr>
                     )}
                   </tbody>

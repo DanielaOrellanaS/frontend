@@ -47,6 +47,7 @@ function Accounts() {
           <AccountDetail
             key={`${detail.id}-${index}`}
             accountName={detail.alias}
+            accountId={detail.id}
             balance={detail.balance}
             flotante={detail.flotante}
             percentage={detail.percentage}
