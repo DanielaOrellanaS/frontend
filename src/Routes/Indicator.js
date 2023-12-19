@@ -59,7 +59,7 @@ function Indicator() {
                 hour: 'numeric',
                 minute: 'numeric',
               });
-              const pc1Class = rowData.pc1 && rowData.pc1 > 70 ? 'blue-text' : rowData.pc1 && rowData.pc1 < 70 ? 'red-text' : '';
+              const pc1Class = rowData.pc1 && rowData.pc1 > 0 ? 'blue-text' : rowData.pc1 && rowData.pc1 < 0 ? 'red-text' : '';
               const formattedPC1 = rowData.pc1 ? parseFloat(rowData.pc1).toFixed(4) : 'N/A';
               return (
                 <tr key={index}>

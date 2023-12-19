@@ -108,12 +108,12 @@
   
   .table-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    margin: 0 auto;
     text-align: center;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
 
   .custom-table {
@@ -141,12 +141,17 @@
     margin-bottom: 10px;
     font-size: 14px;
     background-color: #767B86;
-    border: 0.5px solid white;
+    border-bottom: 0.5px solid white;
   }
   
   .second-table th {
     background-color: #343B4B;
     color: white;
+    border: none;
+  }
+
+  .second-table tr {
+    border-bottom: 0.5px solid white;
   }
 
   .custom-table-second {
@@ -175,6 +180,14 @@
   
   .collapsible-header {
     flex: 1;
+  }
+
+  .custom-table, .custom-table-second, .second-table {
+    width: 100%;
+    max-width: 800px; 
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
   }
   
   .resume-table {
@@ -222,15 +235,15 @@
   
   .custom-table-box {
     display: flex;
-    flex-wrap: nowrap; /* Evita que los elementos se envuelvan en pantallas pequeñas */
-    overflow-x: auto; /* Añade desplazamiento horizontal si no hay suficiente espacio */
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
   
   @media (max-width: 767px) {
     .custom-table-box {
       flex-wrap: wrap;
       overflow-x: auto;
-      display: block; /* Cambia a apilamiento para tamaños de pantalla más pequeños */
+      display: block; 
     }
   }  
   
