@@ -22,7 +22,7 @@ const desiredHeaders = [
 
 function Notices() {
   const [eventsTableData, setEventsTableData] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [currencyImpactData, setCurrencyImpactData] = useState([]);
 
   const handleButtonClick = () => {
@@ -43,23 +43,24 @@ function Notices() {
     fetchData(formattedDate);
   };
 
-  const fetchData = async (date = null) => {
+  const fetchData = async () => {
     try {
-      const data = date ? await getEventsPerDay(date) : await getEvents();
+      const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
+      const data = formattedDate ? await getEventsPerDay(formattedDate) : await getEvents();
       setEventsTableData(data.results);
       extractCurrencyImpactData(data.results); 
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  };  
 
   useEffect(() => {
-    fetchData();
+    fetchData(); 
     const intervalId = setInterval(() => {
       fetchData();
     }, 5 * 60 * 1000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [selectedDate]); 
 
   return (
     <div>
@@ -108,6 +109,7 @@ function Notices() {
             </tbody>
           </table>
         </div>
+        <div className="space"></div>
         <MenuFooter />
       </div>
     </div>

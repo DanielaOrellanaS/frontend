@@ -34,7 +34,7 @@ function AccountDetail({ accountName, accountId, balance, flotante, percentage, 
                   <tr className='text-resume-table'>
                     <td>Balance</td>
                     <td>Flotante</td>
-                    <td>Porcentaje</td>
+                    <td>%Flotante/Balance</td>
                   </tr>
                 </tbody>
               </table>
