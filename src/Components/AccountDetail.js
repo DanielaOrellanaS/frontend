@@ -8,6 +8,16 @@ function AccountDetail({ accountName, accountId, balance, flotante, percentage, 
     setIsTableOpen(!isTableOpen);
   };
 
+  const getColorClassPercentage = (value) => {
+    if (value > 0) {
+      return 'blue-text';
+    } else if (value >= -50) {
+      return 'green-text';
+    } else {
+      return 'red-text';
+    }
+  };
+
   const formatNumber = (number) => {
     if (number || number === 0) {
       return number.toLocaleString('es');
@@ -29,7 +39,7 @@ function AccountDetail({ accountName, accountId, balance, flotante, percentage, 
                   <tr>
                     <td className={getColorClass(balance)}>{formatNumber(balance)}</td>
                     <td className={getColorClass(flotante)}>{formatNumber(flotante)}</td>
-                    <td>{formatNumber(percentage)}{'%'}</td>
+                    <td className={getColorClassPercentage(percentage)}>{formatNumber(percentage)}%</td>
                   </tr> 
                   <tr className='text-resume-table'>
                     <td>Balance</td>
