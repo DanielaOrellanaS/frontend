@@ -217,25 +217,7 @@ async function getPairs() {
   }
 }
 
-async function getEvents() {
-  try {
-    const response = await fetch(`${apiUrl}/eventos/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch events');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function getEventsPerDay(fechas = []) {
+async function getEvents(fechas = []) {
   try {
     let url = `${apiUrl}/eventos/`;
 
@@ -266,8 +248,5 @@ async function getEventsPerDay(fechas = []) {
   }
 }
 
-
-
-
-export { getCsrfToken, login, createAccount, getAccountInfo, getUserFavAccounts, getDetailBalance, getAllDetailBalance, getOperations, getLastIndicators, getPairs, getEvents, getEventsPerDay, getAllDetailBalancePerUser};
+export { getCsrfToken, login, createAccount, getAccountInfo, getUserFavAccounts, getDetailBalance, getAllDetailBalance, getOperations, getLastIndicators, getPairs, getEvents, getAllDetailBalancePerUser};
 
