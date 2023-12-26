@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MenuFooter from '../Components/MenuFooter';
 import { getAllDetailBalancePerUser, getUserFavAccounts } from '../Api';
 import AccountDetail from '../Components/AccountDetail';
@@ -6,28 +6,34 @@ import AccountDetail from '../Components/AccountDetail';
 function Accounts() {
   const [details, setDetails] = useState([]);
   const username = localStorage.getItem('username');
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const list = await getUserFavAccounts(username);
-        const userAccounts = list[0];
 
-        if (userAccounts && userAccounts.accounts) {
-          const accounts = userAccounts.accounts;
-          const parsedAccounts = accounts.substring(1, accounts.length - 1).split(',').map(Number);
-          const detailsData = await getAllDetailBalancePerUser(parsedAccounts);
-          setDetails(detailsData);
-        } else {
-          console.error('No se encontraron cuentas para este usuario');
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  const fetchData = useCallback(async () => {
+    try {
+      const list = await getUserFavAccounts(username);
+      const userAccounts = list[0];
+
+      if (userAccounts && userAccounts.accounts) {
+        const accounts = userAccounts.accounts;
+        const parsedAccounts = accounts.substring(1, accounts.length - 1).split(',').map(Number);
+        const detailsData = await getAllDetailBalancePerUser(parsedAccounts);
+        setDetails(detailsData);
+      } else {
+        console.error('No se encontraron cuentas para este usuario');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, [username]);
 
+  useEffect(() => {
     fetchData();
-  }, []);
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [fetchData]);
 
   const getColorClass = value => {
     if (value < 70) {
