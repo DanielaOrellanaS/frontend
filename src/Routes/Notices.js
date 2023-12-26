@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MenuFooter from '../Components/MenuFooter';
 import '../routes.css';
 import { economicCalendar } from '../constants';
-import { getEvents, getEventsPerDay } from '../Api';
+import { getEvents } from '../Api'; 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
@@ -23,44 +23,45 @@ const desiredHeaders = [
 function Notices() {
   const [eventsTableData, setEventsTableData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currencyImpactData, setCurrencyImpactData] = useState([]);
 
   const handleButtonClick = () => {
     window.open(economicCalendar, '_blank');
   };
 
-  const extractCurrencyImpactData = (data) => {
-    const extractedData = data.map(event => ({
-      moneda: event.moneda,
-      impacto: event.impacto
-    }));
-    setCurrencyImpactData(extractedData);
-  };
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    const formattedDate = date ? format(date, 'yyyy-MM-dd') : null;
-    fetchData(formattedDate);
+    fetchData(date);
   };
 
-  const fetchData = async () => {
+  const isEventPassed = (eventTime) => {
+    const currentDateTime = new Date();
+    const eventDateTime = new Date(eventTime);
+
+    if (isNaN(eventDateTime.getTime())) {
+      console.error('Invalid time value:', eventTime);
+      return false;
+    }
+
+    return eventDateTime < currentDateTime;
+  };
+
+  const fetchData = useCallback(async (date) => {
     try {
-      const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
-      const data = formattedDate ? await getEventsPerDay(formattedDate) : await getEvents();
+      const formattedDate = date ? format(date, 'yyyy-MM-dd') : null;
+      const data = await getEvents(formattedDate);
       setEventsTableData(data.results);
-      extractCurrencyImpactData(data.results); 
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };  
+  }, [setEventsTableData]);
 
   useEffect(() => {
-    fetchData(); 
+    fetchData(selectedDate);
     const intervalId = setInterval(() => {
-      fetchData();
+      fetchData(selectedDate);
     }, 5 * 60 * 1000);
     return () => clearInterval(intervalId);
-  }, [selectedDate]); 
+  }, [selectedDate, fetchData]);
 
   return (
     <div>
@@ -88,24 +89,40 @@ function Notices() {
                 {desiredHeaders.map((header, index) => (
                   <th key={index}>{header}</th>
                 ))}
+                <th>Check</th>
               </tr>
             </thead>
             <tbody>
-            {eventsTableData.map((rowData, index) => (
-              <tr key={index}>
-                {desiredHeaders.map((header, index) => (
-                  <td key={index}>
-                    {header === 'evento' ? (
-                      <Link to={`/detalle-evento/${rowData['evento']}`} className="link-white">
-                        {rowData[header]}
-                      </Link>
-                    ) : (
-                      rowData[header] || '-'
-                    )}
+              {eventsTableData.length === 0 ? ( 
+                <tr>
+                  <td colSpan={desiredHeaders.length + 1} className="no-data-message">
+                    No hay datos disponibles para esta fecha.
                   </td>
-                ))}
-              </tr>
-            ))}
+                </tr>
+              ) : (
+                eventsTableData.map((rowData, index) => (
+                  <tr key={index}>
+                    {desiredHeaders.map((header, index) => (
+                      <td key={index}>
+                        {header === 'evento' ? (
+                          <Link to={`/detalle-evento/${rowData['evento']}`} className="link-white">
+                            {rowData[header]}
+                          </Link>
+                        ) : (
+                          rowData[header] || '-'
+                        )}
+                      </td>
+                    ))}
+                    <td>
+                      {isEventPassed(rowData['fecha'] + ' ' + rowData['hora']) ? (
+                        <div className="check-green">✓</div>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
